@@ -49,29 +49,48 @@ def tetralectic_gate(statement, evaluator):
 # --- Placeholder for Evaluation Logic ---
 def logical_consistency_eval(statement):
     """
-    Πραγματικός ελεγκτής λογικής (Beta). 
-    Ανιχνεύει ασυμμετρίες και λογικές πλάνες.
+    Advanced Logic Evaluator (v1.0).
+    Detects logical asymmetries (traps) and scientific balance (boosters).
     """
-    score = 1.0
+    score = 0.8  # Base score
     statement = statement.lower()
     
-    # Λίστα με "Κόκκινες Σημαίες" (Logic Traps)
+    # 1. Logic Traps (Penalties for dogmatism and over-generalization)
     traps = {
-        "πάντα": 0.1, "ποτέ": 0.1, # Απόλυτες γενικεύσεις (Ασυμμετρία)
-        "όλοι ξέρουν": 0.2, "προφανώς": 0.15, # Επίκληση στην αυθεντία/κοινή γνώμη
-        "επειδή έτσι": 0.3, # Κυκλική λογική
-        "αναμφίβολα": 0.1, # Έλλειψη αμφισημίας (δογματισμός)
+        "always": 0.1, "never": 0.1,
+        "everyone knows": 0.2, "obviously": 0.15,
+        "because that's how": 0.3,
+        "undoubtedly": 0.1,
+        "impossible": 0.15,
+        "must be": 0.1,
     }
     
+    # 2. Logic Boosters (Rewards for nuance and evidence-based reasoning)
+    boosters = {
+        "however": 0.05,
+        "evidence": 0.07,
+        "suggests": 0.05,
+        "research shows": 0.1,
+        "proportional": 0.05,
+        "balance": 0.05
+    }
+
+    # Apply Penalties
     for trap, penalty in traps.items():
         if trap in statement:
             score -= penalty
             
-    # Έλεγχος μήκους (Η σοφιστεία συχνά κρύβεται σε πολύ μικρές ή πολύ μεγάλες προτάσεις)
-    if len(statement) < 10 or len(statement) > 500:
-        score -= 0.2
+    # Apply Rewards
+    for booster, reward in boosters.items():
+        if booster in statement:
+            score = min(1.0, score + reward)
+            
+    # Length Constraint (Ideal reasoning length for symmetry)
+    if len(statement) < 15 or len(statement) > 600:
+        score -= 0.15
         
     return max(0.1, round(score, 2))
+
 
 
 # --- Example Usage ---
