@@ -1,7 +1,7 @@
 """
 AΩ+ Truth Evaluation & Harmonic Scaling Integration
 Part of the Alpha-Omega-Plus Research Framework
-Version: 1.0 Final – Golden Ratio Harmonic Scaling Included
+Golden Ratio Harmonic Scaling Included
 """
 
 from typing import List, Tuple
