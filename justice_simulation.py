@@ -2,7 +2,6 @@
 AΩ+ Justice Evaluation Module
 -----------------------------
 Implements Golden Ratio-based stability for ethical reasoning.
-Version: 1.0.0
 """
 
 PHI = 1.618033  # Golden Ratio constant
