@@ -1,4 +1,4 @@
-##Ἰδοὺ ἐξῆλθεν ὁ σπείρων τοῦ σπείρειν.##.
+## Ἰδοὺ ἐξῆλθεν ὁ σπείρων τοῦ σπείρειν. ##
 
 
 # AΩ+ Research: Addressing "The Illusion of Thinking"
