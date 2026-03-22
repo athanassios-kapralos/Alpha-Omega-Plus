@@ -140,6 +140,8 @@ Scalar Field, Klein–Gordon Extension, Curved Spacetime, Ricci Coupling, Energy
 
 ---
 
+---
+
 ## 10. Formal Integration: The ψ-Attention Bridge
 
 Standard Transformer attention is augmented with the AΩ+ scalar-field regulator to provide dynamic reasoning stability:
@@ -147,25 +149,20 @@ Standard Transformer attention is augmented with the AΩ+ scalar-field regulator
 $$\text{Attention}_{A\Omega+} = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}} + \lambda \cdot \nabla \psi \right)V$$
 
 ### 10.1 ψ Operational Definition
-To bridge the gap between theoretical physics and neural implementation, **$\psi$** is operationally defined as the **Softmax Entropy** of the current hidden state:
+To bridge the gap between theoretical physics and neural implementation, **$\psi$** is operationally defined as the **Logit Entropy** of the current state:
 
-* **Entropy Mapping:** High entropy (uncertainty) in the latent representation creates high field pressure ($\nabla \psi$).
-* **Dynamic Penalty:** This pressure acts as a real-time penalty on the next-token probability distribution, suppressing divergent or inflationary reasoning chains (hallucinations).
+* **Entropy Mapping:** $H(s_i)$ is calculated from the **Logit Distribution** (post-unembedding projection) at position $i$. This represents the model's objective uncertainty.
+* **Field Pressure ($\nabla \psi$):** High entropy gradients between sequential tokens create "Logical Pressure," which acts as a real-time penalty on the next-token probability distribution.
 
-### 10.2 Convergence to Equilibrium
-Through this integration, the system is mathematically driven toward **Φ-harmonic equilibrium**. By anchoring statistical sampling to field stability, AΩ+ transitions AI from stochastic token prediction to grounded, symmetric logical evolution.
-
-### 10.3 Dimensional Alignment & Implementation
-To ensure dimensional consistency within the Attention Matrix $(Q K^T / \sqrt{d_k})$, the gradient $\nabla \psi$ is implemented as a **spatial entropy gradient** across the sequence dimension:
+### 10.2 Dimensional Alignment & Implementation
+To ensure dimensional consistency within the Attention Matrix $\in \mathbb{R}^{h \times n \times n}$, the gradient $\nabla \psi$ is implemented as a **spatial entropy gradient**:
 
 $$\nabla \psi_i = H(s_i) - H(s_{i-1})$$
 
-Where:
-* $H(s_i)$ is the **Softmax Entropy** of the hidden state at token position $i$.
-* The term $\lambda \cdot \nabla \psi$ acts as a **Dynamic Logit Bias**.
-* **Broadcast Mechanism:** The scalar gradient is broadcasted across all attention heads $\in \mathbb{R}^{h \times n \times n}$, effectively penalizing attention weights that follow high-uncertainty transitions.
+* **Dynamic Logit Bias:** The term $\lambda \cdot \nabla \psi$ is applied as a bias mask during the attention score calculation.
+* **Broadcast Mechanism:** The scalar gradient is broadcasted across attention heads. While the baseline implementation is uniform, the framework supports **Head-Specific Weighting** to preserve syntactic processing while penalizing semantic drift.
 
-This transforms the "Field Pressure" into a concrete **Uncertainty Penalty Mask** that prevents the model from drifting into low-probability, high-entropy reasoning chains.
-
+### 10.3 Convergence to Φ-Harmonic Equilibrium
+By anchoring statistical sampling to field stability, AΩ+ transitions AI from stochastic token prediction to grounded, symmetric logical evolution. This uncertainty penalty prevents the model from drifting into "inflationary" reasoning chains (hallucinations) and drives the system toward a stable, minimal-entropy state.
 
 ---
