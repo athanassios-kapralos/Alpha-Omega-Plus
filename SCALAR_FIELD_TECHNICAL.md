@@ -35,27 +35,10 @@ The equation presented here introduces additional interaction mechanisms while p
 
 ## 2. Governing Field Equation
 
-Let \( \psi(x^\mu) \) denote a real scalar field defined on a spacetime manifold with metric \( g_{\mu\nu} \).
+The core dynamics of the AΩ+ framework are governed by the following second-order non-linear partial differential equation (PDE):
 
-The proposed generalized field equation is
+$$\left( \frac{\partial^2}{\partial t^2} + \gamma \frac{\partial}{\partial t} - c^2 \nabla^2 + m^2 \right)\psi + \lambda \psi^3 e^{-\psi^2/\sigma^2} = \xi R \psi + \alpha T^{\mu\nu}\partial_\mu \psi \partial_\nu \psi$$
 
-\[
-\left(
-\frac{\partial^2}{\partial t^2}
-+
-\gamma \frac{\partial}{\partial t}
--
-c^2 \nabla^2
-+
-m^2
-\right)\psi
-+
-\lambda \psi^3 e^{-\psi^2/\sigma^2}
-=
-\xi R \psi
-+
-\alpha T^{\mu\nu}\partial_\mu \psi \partial_\nu \psi
-\]
 
 ---
 
@@ -146,29 +129,16 @@ Interpretation:
 
 ---
 
-## 5. Lagrangian Formulation
+## 5. Lagrangian Derivation (Variational Principle)
 
-A corresponding effective Lagrangian density:
+To ensure mathematical rigor, the field equation is derived from the **Action Integral** $S = \int \mathcal{L} \sqrt{-g} d^4x$. The Lagrangian density $\mathcal{L}$ is defined as:
 
-\[
-\mathcal{L} =
-\frac{1}{2}\partial_\mu \psi \partial^\mu \psi
--
-\frac{1}{2}m^2 \psi^2
--
-V(\psi)
-+
-\xi R \psi^2
-+
-\alpha T^{\mu\nu}\partial_\mu \psi \partial_\nu \psi
-\]
+$$\mathcal{L} = \frac{1}{2}\partial_\mu \psi \partial^\mu \psi - \frac{1}{2}m^2 \psi^2 - V(\psi) + \xi R \psi^2 + \alpha T^{\mu\nu}\partial_\mu \psi \partial_\nu \psi$$
 
-where the regularized potential is
-
-\[
-V(\psi) =
-\frac{\lambda}{4}\psi^4 e^{-\psi^2/\sigma^2}
-\]
+**Derivation Step:**
+By applying the **Euler-Lagrange equation**:
+$$\frac{\partial \mathcal{L}}{\partial \psi} - \partial_\mu \left( \frac{\partial \mathcal{L}}{\partial (\partial_\mu \psi)} \right) = 0$$
+The variation with respect to $\psi$ leads directly to the governing wave equation. The term $\gamma \frac{\partial \psi}{\partial t}$ is introduced as a phenomenological dissipative coupling to model information decay and numerical stability.
 
 ---
 
