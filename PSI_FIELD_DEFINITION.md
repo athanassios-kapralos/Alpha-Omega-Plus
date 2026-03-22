@@ -284,3 +284,8 @@ field-based reasoning dynamics
 
 By representing truth as a coherence state across twelve dimensions, AΩ+ defines reasoning as the search for stable configurations within a semantic field.
 :::
+
+**Note:** The correspondence ψₑ ↔ ψₜ is a working hypothesis. 
+High entropy correlates with instability, but low entropy does 
+not guarantee truth coherence. Empirical validation is required.
+
