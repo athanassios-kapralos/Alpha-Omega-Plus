@@ -239,9 +239,9 @@ The AΩ+ framework integrates Scalar Field Equations, Tetralectic Gates, and Har
 Research Lead: Athanassios Kapralos
 License: MIT
 
-This is ready to paste directly into GitHub. It keeps all math, Python examples, and explanations in **one Markdown file**.  
+ 
 
-If you want, I can also provide a **slightly condensed version under 10,000 characters** for quick GitHub README display. Do you want me to do that too?- **soul**: Current internal state, e.g., model’s knowledge or understanding.  
+ **soul**: Current internal state, e.g., model’s knowledge or understanding.  
 - **Reason**: Ideal state or “truth” the system aims for.
 
 **Role:** Enhances emotional understanding.  
