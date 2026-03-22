@@ -162,7 +162,12 @@ $$\nabla \psi_i = H(s_i) - H(s_{i-1})$$
 * **Dynamic Logit Bias:** The term $\lambda \cdot \nabla \psi$ is applied as a bias mask during the attention score calculation.
 * **Broadcast Mechanism:** The scalar gradient is broadcasted across attention heads. While the baseline implementation is uniform, the framework supports **Head-Specific Weighting** to preserve syntactic processing while penalizing semantic drift.
 
-### 10.3 Convergence to Φ-Harmonic Equilibrium
-By anchoring statistical sampling to field stability, AΩ+ transitions AI from stochastic token prediction to grounded, symmetric logical evolution. This uncertainty penalty prevents the model from drifting into "inflationary" reasoning chains (hallucinations) and drives the system toward a stable, minimal-entropy state.
+### 10.3 Causal Alignment & Step-Lag Implementation
+To maintain autoregressive causality during inference, the gradient $\nabla \psi$ is implemented using a **single-step temporal lag**. The uncertainty penalty for the current token $t$ is derived from the entropy cached during the previous forward pass:
 
----
+$$\nabla \psi_{t} \approx H(s_{t-1}) - H(s_{t-2})$$
+
+**Implementation Details:**
+* **Temporal Lag:** Since logit entropy $H(s_t)$ is only available at the end of a forward pass, the AΩ+ regulator uses the cached entropy from step $t-1$ to bias the attention scores of step $t$.
+* **Dynamic Logit Bias:** The term $\lambda \cdot \nabla \psi_{t}$ is applied as a **Look-Back Penalty Mask**. If the previous step showed a sharp increase in uncertainty, the current attention mechanism is "suppressed" to force a search for more stable logical paths.
+* **Broadcast Mechanism:** This scalar delta is broadcasted across all attention heads, acting as a global stability gate that prevents the propagation of cumulative reasoning errors (hallucination drift).
