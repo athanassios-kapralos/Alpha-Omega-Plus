@@ -233,3 +233,19 @@ Energy–Momentum Interaction
 Nonlinear Partial Differential Equations  
 Regularized Potentials  
 Field Theory
+
+---
+
+## 10. Formal Integration: The $\psi$-Attention Bridge
+
+In current Transformer architectures, the attention mechanism is defined by the interaction of Queries ($Q$), Keys ($K$), and Values ($V$):
+
+$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$.
+
+The **AΩ+ Framework** introduces the **Scalar Field Regulator ($\psi$)**, which acts as a dynamic logical bias within the latent space. The augmented attention score becomes:
+
+$$\text{Attention}_{A\Omega+} = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}} + \lambda \cdot \nabla \psi \right)V$$
+
+* **Where $\nabla \psi$** is the gradient of the logical field, representing the "pressure" of the **Symmetry Stability Factor ($J_{stab}$)**.
+* **The Result:** Tokens that increase entropy (hallucinations) are penalized by the field pressure, forcing the model to converge toward the **Φ-Harmonic equilibrium**.
+
