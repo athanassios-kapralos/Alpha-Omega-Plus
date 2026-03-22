@@ -1,8 +1,16 @@
-:::writing{variant=“standard” id=“41827”}
+The AΩ+ framework uses two complementary ψ variables.
 
-PSI_DEFINITION.md
+ψₜ (Truth Psi)
+semantic coherence across twelve dimensions.
 
-Formal Definition of the ψ Field in the AΩ+ Framework
+ψₑ (Entropy Psi)
+information entropy of the token distribution.
+
+The regulator operates on ψₑ while the theoretical model
+describes ψₜ. Future work explores their mapping.
+
+
+# Formal Definition of the ψ Field in the AΩ+ Framework #
 
 ⸻
 
