@@ -138,21 +138,21 @@ Scalar Field, Klein–Gordon Extension, Curved Spacetime, Ricci Coupling, Energy
 
 ---
 
+---
+
 ## 10. Formal Integration: The ψ-Attention Bridge
 
-Standard Transformer attention:
+Standard Transformer attention is augmented with the AΩ+ scalar-field regulator to provide dynamic reasoning stability:
 
-\[
-\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V.
-\]
+$$\text{Attention}_{A\Omega+} = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}} + \lambda \cdot \nabla \psi \right)V$$
 
-AΩ+ augments it with the scalar-field regulator:
+### 10.1 ψ Operational Definition
+To bridge the gap between theoretical physics and neural implementation, **$\psi$** is operationally defined as the **Softmax Entropy** of the current hidden state:
 
-\[
-\text{Attention}_{A\Omega+} = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}} + \lambda \cdot \nabla \psi \right)V,
-\]
+* **Entropy Mapping:** High entropy (uncertainty) in the latent representation creates high field pressure ($\nabla \psi$).
+* **Dynamic Penalty:** This pressure acts as a real-time penalty on the next-token probability distribution, suppressing divergent or inflationary reasoning chains (hallucinations).
 
-where \(\nabla \psi\) encodes the **Symmetry Stability Factor \(J_{stab}\)**. Entropy-increasing tokens (hallucinations) receive negative field pressure, driving convergence to Φ-harmonic equilibrium.
+### 10.2 Convergence to Equilibrium
+Through this integration, the system is mathematically driven toward **Φ-harmonic equilibrium**. By anchoring statistical sampling to field stability, AΩ+ transitions AI from stochastic token prediction to grounded, symmetric logical evolution.
 
-\psi Operational Definition: In this implementation, \psi is mapped to the Softmax Entropy of the current hidden state.
-High entropy (uncertainty) creates high field pressure (\nabla \psi), which acts as a dynamic penalty on the next-token probability distribution.
+---
