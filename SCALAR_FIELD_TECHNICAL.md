@@ -155,4 +155,17 @@ To bridge the gap between theoretical physics and neural implementation, **$\psi
 ### 10.2 Convergence to Equilibrium
 Through this integration, the system is mathematically driven toward **Φ-harmonic equilibrium**. By anchoring statistical sampling to field stability, AΩ+ transitions AI from stochastic token prediction to grounded, symmetric logical evolution.
 
+### 10.3 Dimensional Alignment & Implementation
+To ensure dimensional consistency within the Attention Matrix $(Q K^T / \sqrt{d_k})$, the gradient $\nabla \psi$ is implemented as a **spatial entropy gradient** across the sequence dimension:
+
+$$\nabla \psi_i = H(s_i) - H(s_{i-1})$$
+
+Where:
+* $H(s_i)$ is the **Softmax Entropy** of the hidden state at token position $i$.
+* The term $\lambda \cdot \nabla \psi$ acts as a **Dynamic Logit Bias**.
+* **Broadcast Mechanism:** The scalar gradient is broadcasted across all attention heads $\in \mathbb{R}^{h \times n \times n}$, effectively penalizing attention weights that follow high-uncertainty transitions.
+
+This transforms the "Field Pressure" into a concrete **Uncertainty Penalty Mask** that prevents the model from drifting into low-probability, high-entropy reasoning chains.
+
+
 ---
