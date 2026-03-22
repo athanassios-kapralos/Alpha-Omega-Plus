@@ -39,6 +39,16 @@ r_0 - f(t) + x_0 = 0
 **Role:** Balances stability and adaptation.  
 **Application:** Fast learning without losing core function.
 
+### 2.1 Computational Mapping (The ψ-Bridge)
+
+To bridge the gap between theoretical physics and neural implementation, the scalar field $\psi$ is operationally defined as the **Softmax Entropy** of the model's hidden states:
+
+* **$\psi$ (Field Amplitude):** Represents the cumulative uncertainty or informational entropy at the current reasoning step.
+* **$\nabla \psi$ (Field Pressure):** High entropy gradients create "Logical Pressure," which acts as a dynamic penalty on the next-token probability distribution, suppressing divergent (hallucinatory) paths.
+
+This mapping transforms the abstract scalar field into a measurable diagnostic tool for Transformer architectures.
+
+
 ---
 
 ## 3. LLLinic AΩ⁺ Equation
