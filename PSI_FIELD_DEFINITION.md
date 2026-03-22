@@ -1,13 +1,22 @@
-The AΩ+ framework uses two complementary ψ variables.
+# attention: #
+The AΩ+ framework distinguishes two ψ variables.
 
 ψₜ (Truth Psi)
-semantic coherence across twelve dimensions.
+Multidimensional semantic coherence evaluated across the twelve
+truth dimensions.
 
 ψₑ (Entropy Psi)
-information entropy of the token distribution.
+Information entropy of the token probability distribution
+during generation.
 
-The regulator operates on ψₑ while the theoretical model
-describes ψₜ. Future work explores their mapping.
+The AlphaOmegaRegulator operates on ψₑ, while the theoretical
+model describes ψₜ.
+
+# Note: #
+The relationship between ψₑ and ψₜ is a working hypothesis.
+Higher entropy often correlates with reasoning instability,
+but low entropy does not guarantee truth coherence.
+Empirical validation is required.
 
 
 # Formal Definition of the ψ Field in the AΩ+ Framework #
@@ -284,8 +293,4 @@ field-based reasoning dynamics
 
 By representing truth as a coherence state across twelve dimensions, AΩ+ defines reasoning as the search for stable configurations within a semantic field.
 :::
-
-**Note:** The correspondence ψₑ ↔ ψₜ is a working hypothesis. 
-High entropy correlates with instability, but low entropy does 
-not guarantee truth coherence. Empirical validation is required.
 
