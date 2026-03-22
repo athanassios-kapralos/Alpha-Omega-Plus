@@ -153,3 +153,6 @@ AΩ+ augments it with the scalar-field regulator:
 \]
 
 where \(\nabla \psi\) encodes the **Symmetry Stability Factor \(J_{stab}\)**. Entropy-increasing tokens (hallucinations) receive negative field pressure, driving convergence to Φ-harmonic equilibrium.
+
+\psi Operational Definition: In this implementation, \psi is mapped to the Softmax Entropy of the current hidden state.
+High entropy (uncertainty) creates high field pressure (\nabla \psi), which acts as a dynamic penalty on the next-token probability distribution.
