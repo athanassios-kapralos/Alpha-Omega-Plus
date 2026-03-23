@@ -1,48 +1,56 @@
 """
-AΩ+ Justice Evaluation Module
------------------------------
-Implements Golden Ratio-based stability for ethical reasoning.
+AΩ+ Justice & Ethical Stability Module
+Implements Golden Ratio (Φ) harmony between individual rights and collective good.
 """
 
-PHI = 1.618033  # Golden Ratio constant
+def evaluate_justice(individual_rights, collective_good, return_warning=False):
+    """
+    Returns a stability score for justice/ethics using Golden Ratio harmony.
 
-def evaluate_justice(individual_rights, collective_good):
+    Parameters:
+        individual_rights (float): Score representing individual rights (0..1 or scaled)
+        collective_good (float): Score representing collective good (0..1 or scaled)
+        return_warning (bool): If True, returns (score, warning_string) instead of just score
+
+    Returns:
+        float or tuple: Justice score (0..1, higher = better balance).
+        If return_warning is True, also returns a warning string for extreme imbalances.
     """
-    Computes a justice stability score using the Alpha-Omega Plus principle:
-    Justice is maximized when the ratio of individual rights to collective good
-    approaches the Golden Ratio (Φ).
-    
-    :param individual_rights: Value representing protection of individual rights (0..1)
-    :param collective_good: Value representing collective welfare (0..1)
-    :return: Justice Stability Score (0..1)
-    """
-    if collective_good <= 0:
-        raise ValueError("collective_good must be greater than zero to avoid division error.")
-    
-    # Harmony ratio
-    harmony_point = individual_rights / collective_good
-    
-    # Tension from Golden Ratio
-    tension = abs(harmony_point - PHI)
-    
-    # Convert tension into a truth/stability score
+    phi = 1.618033988749895  # Golden Ratio
+
+    # Avoid division by zero (add small epsilon)
+    denominator = collective_good + 1e-9
+    harmony_point = individual_rights / denominator
+
+    # --- Edge-case warnings (extreme imbalances) ---
+    warning = None
+    if harmony_point > 5 * phi:
+        warning = "Tyranny of the Individual"
+    elif harmony_point < phi / 5:
+        warning = "Oppression of the Individual"
+
+    # Tension: how far the harmony point deviates from Φ
+    tension = abs(harmony_point - phi)
+    # Truth score: inverse of tension (capped to [0,1])
     truth_score = 1 / (1 + tension)
-    
+
+    if return_warning:
+        return round(truth_score, 4), warning
     return round(truth_score, 4)
 
-# ---------------------------------------------------------
-# Example Usage
-# ---------------------------------------------------------
+
+# --- Example usage and test ---
 if __name__ == "__main__":
-    # Test cases
-    scores = [
-        (0.8, 0.494),
-        (0.6, 0.37),
-        (0.9, 0.55),
-        (0.5, 0.31)
-    ]
-    
-    print("--- AΩ+ Justice Evaluation ---")
-    for ind_rights, col_good in scores:
-        score = evaluate_justice(ind_rights, col_good)
-        print(f"Individual: {ind_rights}, Collective: {col_good} → Justice Stability: {score}")
+    # Balanced case (individual rights : collective good ≈ Φ)
+    balanced_score, warn = evaluate_justice(0.8, 0.494, return_warning=True)
+    print(f"Balanced: score = {balanced_score}, warning = {warn}")
+
+    # Extreme cases
+    tyranny_score, warn_tyranny = evaluate_justice(10.0, 0.1, return_warning=True)
+    print(f"Tyranny: score = {tyranny_score}, warning = {warn_tyranny}")
+
+    oppression_score, warn_oppression = evaluate_justice(0.1, 10.0, return_warning=True)
+    print(f"Oppression: score = {oppression_score}, warning = {warn_oppression}")
+
+    # Standard usage (no warning)
+    print(f"Default: {evaluate_justice(0.8, 0.5)}")
