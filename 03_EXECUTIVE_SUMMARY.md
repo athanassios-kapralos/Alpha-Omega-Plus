@@ -1,6 +1,6 @@
 ---
 
-Executive Summary: The AΩ+ Framework & Tetralectic Logic
+## *Executive Summary: The AΩ+ Framework & Tetralectic Logic*
 
 Overview
 
