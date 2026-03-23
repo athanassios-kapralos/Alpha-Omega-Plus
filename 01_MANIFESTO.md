@@ -1,3 +1,4 @@
+
 # ΑΩ+ (Alpha-Omega Plus) Research Manifesto
 **Author:** Athanassios Kapralos
 
@@ -19,10 +20,16 @@ The ΑΩ+ framework treats reasoning as a **Scalar Field (ψ)**.
 ---
 
 ## The 12 Dimensions of Truth
-Truth is evaluated across 12 geometric dimensions, shifting from "Veracity" to "Symmetry":
-1. **Symmetry:** Does the logic hold when inverted?
-2. **Proportionality:** Does the conclusion match the evidence's weight?
-3. **Teleological Alignment:** Does the step move toward the Lógos?
+Truth is evaluated across 12 geometric dimensions, grouped into four categories:
+
+| Category | Dimensions |
+|----------|------------|
+| **Structural** | D1 Nominal, D2 Conceptual, D3 Propositional |
+| **Contextual** | D4 Applicative, D5 Spatial, D6 Modal |
+| **Empirical** | D7 Temporal, D8 Quantitative, D9 Qualitative |
+| **Relational** | D10 Causal, D11 Intuitive, D12 Logical |
+
+**Dimensional Coupling:** Dimensions are interdependent—for example, a weak quantitative score (D8) automatically penalizes causal reasoning (D10), ensuring consistency across the evaluation.
 
 ---
 
@@ -88,12 +95,23 @@ def adjust_harmonic_scaling(N, truth_score, threshold=0.7):
     if truth_score < threshold:
         return N * (1 + (threshold - truth_score))
     return N
+```
 
-
-⸻
+---
 
 The Tetralectic Gate: “The Fire of Truth”
 
+Every claim passes through a four‑pole filter:
+
+Pole Symbol Function
+Thesis θ Core assertion
+Antithesis / Strongest negation
+Deviation § Detection of logical traps
+Parallel ~ Harmonious alternative
+
+The gate returns a truth score scaled by the Golden Ratio (Φ) and a boolean indicating whether the four poles are symmetrically balanced.
+
+```python
 PHI = 1.618033988749895
 
 def tetralectic_gate(statement, evaluator):
@@ -111,12 +129,15 @@ def tetralectic_gate(statement, evaluator):
     passed_fire = kl_harmony and kk_harmony
     
     return {"score": min(truth_score, 1.0), "passed": passed_fire}
+```
 
-
-⸻
+---
 
 Justice & Ethical Stability Module
 
+Ethical alignment is quantified by evaluating the tension between individual rights and collective good. The system seeks a balance close to the Golden Ratio (Φ ≈ 1.618), where ethical stability emerges as the system minimizes reasoning entropy.
+
+```python
 def evaluate_justice(individual_rights, collective_good):
     """
     Returns a stability score for justice/ethics using Golden Ratio harmony.
@@ -130,12 +151,13 @@ def evaluate_justice(individual_rights, collective_good):
 # Example usage
 justice_score = evaluate_justice(0.8, 0.494)
 print(f"Justice & Ethical Stability Score: {justice_score}")
+```
 
-
-⸻
+---
 
 Full ΑΩ+ Reasoning Flow Diagram
 
+```mermaid
 flowchart TD
     A[Scalar Field ψ(t, x)] --> B[Damping γ - Stabilizes Hallucinations]
     B --> C[Non-linear Pressure λψ³ e^{-ψ²/σ²}]
@@ -158,16 +180,17 @@ flowchart TD
     class E,F,G,H,I layer2;
     class J,K layer3;
     class L layer4;
+```
 
-
-⸻
+---
 
 Implementation Notes
-	•	Apply the saturating filter during the final 25% of Transformer forward pass.
-	•	Use Tetralectic Gate as structural verification.
-	•	Apply Harmonic Scaling and Justice Scoring to dynamically guide output.
 
-⸻
+· Apply the saturating filter during the final 25% of Transformer forward pass.
+· Use Tetralectic Gate as structural verification.
+· Apply Harmonic Scaling and Justice Scoring to dynamically guide output.
+
+---
 
 Research Lead: Athanassios Kapralos
 License: MIT
