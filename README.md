@@ -86,15 +86,25 @@ The engine evaluates information across **12 Dimensions of Truth** to ensure a �
 
 | File/Folder | Description |
 |-------------|-------------|
+| `00_START_HERE.md` | Entry point with framework overview and quick start guide. |
+| `01_MANIFESTO.md` | Theoretical principles and research vision. |
+| `02_SCIENTIFIC_SUMMARY.md` | Mathematical foundations and relativistic field equations. |
+| `03_EXECUTIVE_SUMMARY.md` | Non‑technical overview for stakeholders. |
+| `AΩ+_SYSTEM_PROMPT.md` | The complete AΩ+ system prompt for LLM deployment. |
+| `AΩ+_TEST_RUN_DEMO.md` | Full execution trace demonstrating the AΩ+ v2.4 Layer. |
+| `BROKEN_SYLLOGISM.md` | Case study of the reasoning engine in action. |
+| `NOTES.md` | Development notes and working observations. |
+| `PSI_FIELD_DEFINITION.md` | Operational definition of the ψ scalar field and its mapping to neural entropy. |
+| `SCALAR_FIELD_TECHNICAL.md` | Technical deep dive into the scalar field implementation. |
 | `ao_engine.py` | Core scalar field engine and mathematical logic. |
+| `ao_plus_demo.py` | Integrated demo workflow. |
+| `ao_regulator.py` | Dynamic token budgeting and harmonic scaling regulator. |
+| `justice_simulation.py` | Justice & ethical stability module using Φ‑harmony. |
+| `tetralectic_framework.py` | Framework‑level orchestration of the four‑pole logic. |
 | `tetralectic_gate.py` | Implementation of the four‑pole logic filter. |
 | `truth_evaluator.py` | The 12‑dimensional scoring and coupling module. |
-| `AO_plus_demo.py` | Integrated demo workflow. |
-| `Ao_DEMO_TEST_RUN.md` | A full execution trace demonstrating the AΩ+  Layer. |
-| `MANIFESTO.md` | Theoretical principles and research vision. |
-| `SCIENTIFIC_SUMMARY.md` | Mathematical foundations and relativistic field equations. |
-| `EXECUTIVE_SUMMARY.md` | Non‑technical overview for stakeholders. |
-| `BROKEN_SYLLOGISM.md` | Case study of the reasoning engine in action. |
+| `truth_scoring_engine.py` | Core engine for multi‑dimensional truth scoring. |
+| `license` | MIT License file. |
 
 ---
 
