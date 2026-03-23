@@ -32,7 +32,23 @@ To filter hallucinations and enforce structural resonance, every inference passe
 | Deviation | § | Detection of logical traps and “hallucination” paths. |
 | Parallel | ~ | Harmonious alternative or contextual reframing. |
 
+### 2.2 Scalar Field Reasoning (ψ)
 
+Reasoning is modeled as a scalar field *ψ* on a logical manifold.
+
+- **ψₜ (Truth Coherence):** The objective stability of a claim.  
+- **ψₑ (Entropy):** The measure of informational noise.  
+- **ψ_ω (Omega Coherence):** Teleological validation—ensuring the output serves its ultimate purpose.
+
+**Curvature Coupling:** Logical complexity is treated as spacetime curvature.  
+**Entropy Minimization:** Truth corresponds to the lowest energy state (Φ‑Attractor).
+
+**Operational Mapping for LLMs:**  
+- *ψ (Field Amplitude):* Softmax entropy of the model’s hidden states (cumulative uncertainty).  
+- *R (Logical Curvature):* Prompt complexity index (e.g., number of reasoning steps, ambiguity).  
+- *J_stab (Symmetry Stability Factor):* The final verification score produced by `ao_engine.py`, reflecting the alignment of the output with the Tetralectic poles.
+
+This mapping transforms the abstract scalar field into a measurable diagnostic tool for Transformer architectures.
 
 ### 2.3 Harmonic Scaling (Φ)
 
