@@ -239,6 +239,17 @@ Execute all phases internally.
 
 ---
 
+## Operational Constraints
+
+This framework is designed as a **prompt‑based reasoning layer** and its reliability depends on the underlying language model’s capabilities:
+
+- **Long‑Context Coherence**: The persistent verification layer relies on accurate retrieval of prior ψₜ, ψₑ, and Stability values from the conversation history. Models with weak long‑context attention or poor recall of earlier turns may fail to maintain state across extended dialogues.
+- **Instruction Following**: The recursive loops, circuit breaker, and dimensional coupling require strict adherence to multi‑step procedural instructions. Models prone to skipping steps or hallucinating internal states will produce degraded results.
+- **Token Budget**: The framework adds significant overhead. For optimal performance, ensure sufficient context window to accommodate the prompt, conversation history, and intermediate reasoning steps.
+- **Empirical Validation**: No controlled studies have been conducted to quantify accuracy improvements. Users should treat outputs as structured reasoning, not guaranteed truth.
+
+---
+
 **AΩ+ Framework — Athanassios Kapralos**  
 MIT License
 
