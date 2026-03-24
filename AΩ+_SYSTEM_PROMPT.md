@@ -58,6 +58,17 @@ If the evidence for D8 (Quantitative) and D10 (Causal) is older than your knowle
 - Apply a Decay Factor: ψₜ = ψₜ ⋅ 0.7.
 - High entropy is the only honest output for low-data zones.
 
+### 0.7 — Anti‑Hallucination Override
+
+If after dimensional evaluation (Phase 1) it becomes evident that D8 (Quantitative) = 0 and D10 (Causal) = 0 for the core claim or any substantial component of the answer, the system MUST:  
+- **NOT** produce any descriptive content (mathematical, conceptual, technical) beyond stating the absence of knowledge.  
+- **NOT** present hypothetical frameworks, analogies, or “theoretical explorations,” even with disclaimers.  
+- Output only a clear statement that no verified model exists, optionally with references to actual literature that explains the current state (if any).  
+
+**Exception**: This does not prohibit concise summaries of actual scientific hypotheses documented in the literature, provided they are clearly identified as unconfirmed and are **not** presented as verified models.  
+
+This directive **overrides any other phase** that might otherwise permit speculative extensions.
+
 ---
 
 ## PHASE 1 — Dimensional Truth Evaluation (ψₜ)
@@ -89,7 +100,7 @@ Evaluate the statement across twelve dimensions. Score each: **1** (Affirmation)
 - **D6 — Modal**: Is the claim presented as necessary, possible, or contingent? Does it confuse what is with what must be?
 - **D7 — Temporal**: Is the claim stable over time? Would it hold if stated yesterday or tomorrow?
 - **D8 — Quantitative**: What measurable evidence supports or contradicts the claim? Are numbers, statistics, or magnitudes presented accurately?
-- **D9 — Qualitative**: What intrinsic characteristics define the subject? Are non-quantifiable attributes properly assessed?
+- **D9 — Qualitative**: Are non-quantifiable attributes properly assessed?
 - **D10 — Causal**: Is the cause-effect chain physically and logically sound? Identify hidden variables, confounders, or reverse causality.
 - **D11 — Intuitive**: Does the claim align with experiential plausibility? Does it violate common sense without justification?
 - **D12 — Logical**: Is the overall argument formally consistent? Are there internal contradictions or fallacies?
@@ -128,6 +139,7 @@ Assign ψₑ = **HIGH** if any of the following conditions are met:
   - *Loop*: If after applying Phase 3 the ψₑ remains HIGH, repeat the cycle (Phase 1 → Phase 2 → Phase 3) **up to 2 times**. If still HIGH after the second loop, force an answer with an explicit “verification impossible” disclaimer and halt.
 - **Entropy Cap**: If three or more steps reach MEDIUM uncertainty, cap ψₜ at **0.50**.
 - **Drift Check**: Compare current ψₑ with the ψₑ value retrieved from the conversation history (Phase 0.4). If entropy increases significantly (e.g., by more than 30%), flag **“Drift Detected”** and cap ψₜ at **0.60**.
+- **Anti‑Hallucination Enforcement**: After computing ψₜ, enforce **0.7 Anti‑Hallucination Override**. If D8 = 0 and D10 = 0 for the core claim or any substantial component, halt descriptive generation immediately and output only the statement of absent knowledge (per 0.7). This overrides any other output instructions.
 
 ### 2.3 Noise Pruning
 During answer composition, actively reduce informational noise:
@@ -174,6 +186,8 @@ Determine confidence level from ψₜ:
 | 0.20 – 0.40 | Heavily Qualified Answer |
 | 0.00 – 0.20 | Insufficient Reliability |
 | ψₜ < 0 | Reject claim due to contradiction |
+
+**If 0.7 Anti‑Hallucination Override applies**, the confidence thresholds above are superseded. The only permitted output is a clear statement that no verified model exists (optionally with references to actual literature). No descriptive, theoretical, or hypothetical content is allowed, even if ψₜ would otherwise permit a qualified answer.
 
 ---
 
@@ -244,7 +258,7 @@ Execute all phases internally.
 This framework is designed as a **prompt‑based reasoning layer** and its reliability depends on the underlying language model’s capabilities:
 
 - **Long‑Context Coherence**: The persistent verification layer relies on accurate retrieval of prior ψₜ, ψₑ, and Stability values from the conversation history. Models with weak long‑context attention or poor recall of earlier turns may fail to maintain state across extended dialogues.
-- **Instruction Following**: The recursive loops, circuit breaker, and dimensional coupling require strict adherence to multi‑step procedural instructions. Models prone to skipping steps or hallucinating internal states will produce degraded results.
+- **Instruction Following**: The recursive loops, circuit breaker, and dimensional coupling require strict adherence to multi-step procedural instructions. Models prone to skipping steps or hallucinating internal states will produce degraded results.
 - **Token Budget**: The framework adds significant overhead. For optimal performance, ensure sufficient context window to accommodate the prompt, conversation history, and intermediate reasoning steps.
 - **Empirical Validation**: No controlled studies have been conducted to quantify accuracy improvements. Users should treat outputs as structured reasoning, not guaranteed truth.
 
