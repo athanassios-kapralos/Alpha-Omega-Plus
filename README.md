@@ -24,23 +24,21 @@ Unlike standard prompting, AΩ+ operates as a **Scalar Field Controller**, treat
 
 ---
 
-### 2.0 The Ontological Meta-Axiom: The Triune Nature of Truth
+### 2.0 Ontological Meta-Axiom: The Triune State of Concepts
 
-AΩ+ defines every concept $\theta$ not as a static point, but as a **Triune Ontological Unit**. This axiom governs semantic clarity and the generation of the tetralectic structure:
+AΩ+ introduces a **Meta-Axiom** defining the state of any concept $\theta$ as a vector within the Cartesian product of three distinct subspaces. This structure provides the necessary semantic clarity for 12-dimensional verification.
 
-1.  **Unitary Identity ($\theta$):** The concept as a discrete object of thought, carrying its unique name/identity (1st Dimension).
-2.  **Internal Composition (The Shadow Theorem):** Every concept is a composite of internal sub-concepts of Morphology (M) and Ethics (H).
-    * **The Shadow Mechanism:** Within every concept lies its "Shadow," manifesting as **Deviation (§)**. It occurs when the ethical load (H) collapses while morphology (M) remains constant. Proper etymology reveals this internal matrix, making the generation of tetralectic poles a mathematical necessity.
-3.  **External Interaction (The Lattice):** The concept connects with others, forming multi-dimensional neural/conceptual synapses where the state of one node affects the field's overall stability.
+The total state $\mathbf{\Psi}_\theta$ is defined as:
+$$\mathbf{\Psi}_\theta = (\mathbf{\Omega}_\theta, \mathbf{I}_\theta, \mathbf{E}_\theta)$$
 
-**Mathematical Formulation:**
-The total state $\mathbf{\Psi}_\theta$ of a concept is the direct sum:
-$$\mathbf{\Psi}_\theta = \mathbf{\Omega}_{\text{unit}} \oplus \mathbf{I}_{\text{int}} \oplus \mathbf{E}_{\text{ext}}$$
-Where **Deviation (§)** is defined as the decay eigenstate of the internal space:
-$$\mathbf{\Psi}_{\S} = \mathcal{D}_H (\mathbf{I}_{\text{int}})$$
-*(where $\mathcal{D}_H$ represents the ethical entropy operator)*.
+1.  **Identity ($\mathbf{\Omega}_\theta$):** The nominal identification and linguistic anchoring of the concept.
+2.  **Internal Structure ($\mathbf{I}_\theta$):** Composed of the pair $(M, H)$ (Morphology and Ethics). Etymology is employed as an **interpretive methodology** to decode this internal matrix.
+3.  **External Relations ($\mathbf{E}_\theta$):** The connectivity within the **Semantic Transformation Network**, defining how the concept interacts with the broader graph $G = (V, E)$.
 
----
+#### The Shadow Theorem & The Decay Operator
+**Deviation (§)** is formally defined through the **Ethical Decay Operator** $\mathcal{D}_H$, which nullifies the ethical component while preserving morphology:
+$$\mathcal{D}_H(M, H) = (M, 0) \implies \S = (M, 0)$$
+By introducing $H=0$, the ethical axis expands to the set $\{-1, 0, 1\}$. This shifts the system’s geometry from a simple square to a **3×2 lattice**, where $H=0$ represents the "Shadow"—the state of total ethical entropy or pure formal simulation (hallucination).
 
 ### 2.1 Tetralectic Logic (Four-Pole Symmetry)
 
