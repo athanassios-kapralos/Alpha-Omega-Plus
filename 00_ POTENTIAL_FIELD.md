@@ -93,18 +93,16 @@ This measures how much the reasoning trajectory “rolls down” the potential l
 
 ---
 
-## 6. Tetralectic Logic: Mathematical and Philosophical Foundation
+## 6. Tetralectic Logic: Mathematical Foundation
 
-The tetralectic framework arises from the observation that binary (stable/unstable) classification is insufficient to capture the full spectrum of reasoning states. A valid logical negation is stable but qualitatively different from a coherent affirmation; a paradox (e.g., “this statement is false”) is unstable in a distinct way from mere semantic drift.
-
-The AΩ+ theory formalizes this through **four poles**, each characterized by two independent binary attributes: **Form (M)** and **Ethos (H)**.
+Binary classification (stable/unstable) is insufficient to distinguish between a valid negation, a coherent affirmation, a paradox, and a resolution at a higher level. The tetralectic framework formalizes this through **four poles**, each defined by two independent binary attributes: **Form (M)** and **Ethos (H)**.
 
 | Attribute | Values | Interpretation |
 |-----------|--------|----------------|
 | **Form (M)** | \(+1\) / \(-1\) | Structural modality (e.g., plurality vs. unity, self vs. other) |
 | **Ethos (H)** | \(+1\) / \(-1\) | Moral sign (good/truth vs. bad/falsehood) |
 
-Each concept (as a *Thesis*, \(\theta\)) occupies a point in this 2‑dimensional space. The four poles are defined by applying two symmetry transformations and a projection:
+Let a concept (Thesis, \(\theta\)) be represented by the vector \((M_\theta, H_\theta)\) with \(M_\theta, H_\theta \in \{-1, +1\}\). The other three poles are derived by applying symmetry transformations and a projection:
 
 - **Antithesis (\(/\))**: \( (M, H) \to (M, -H) \) — reflection across the horizontal axis (full ontological inversion).
 - **Parathesis (\(\sim\))**: \( (M, H) \to (-M, H) \) — reflection across the vertical axis (complementary path with same ethos).
@@ -119,18 +117,14 @@ This yields the canonical tetralectic square:
 | **Paraclisis** | \(\S\) | \(+1\) | \(-1\) | Ochlocracy (plurality, bad) |
 | **Parathesis** | \(\sim\) | \(-1\) | \(+1\) | Hegemony (unity, good) |
 
-The same structure applies to other domains (e.g., Freedom: *ἐλευθερία* \(\theta\), *εἰλωτεία* \(/\), *ἀσυδοσία* \(\S\), *διακονία* \(\sim\)) by redefining the M‑axis (self vs. other).
-
-The **stability score** \(S = \hat{\Delta}\Psi - \lambda\|\nabla\Psi\|^2\) maps onto these poles via the local geometry of the potential field \(\Psi\):
+The transformations form the symmetry group \(D_2\) (Klein four‑group) extended with a projection operator. The **stability score** \(S = \hat{\Delta}\Psi - \lambda\|\nabla\Psi\|^2\) maps onto these poles via the local geometry of \(\Psi\):
 
 - **Affirmation (\(\theta\))**: Local maximum of \(\Psi\) (convex basin, stable).
 - **Negation (\(/\))**: Local minimum of \(\Psi\) (concave, stable contradiction).
 - **Paradox (\(\S\))**: Saddle point or region of high curvature (unstable conflict).
-- **Transcendence (\(\sim\))**: A higher‑order local maximum reached after crossing a saddle (resolution at a higher level).
+- **Transcendence (\(\sim\))**: Higher‑order local maximum reached after crossing a saddle (resolution at a higher level).
 
-This mapping follows from the **Canon of Symmetry** derived from the two independent axes, which is mathematically equivalent to the symmetry group \(D_2\) (the Klein four‑group) extended with a projection operator for the Paraclisis.
-
-For the full philosophical exposition, including the **Pyre of Truth** (three‑stage validation), the **Sacred Spiral** (golden‑ratio organization), and the integration of the **12 Dimensions of Truth** into a 14‑dimensional space, see the accompanying document *Tetralectic Theory AΩ+*.
+This mapping is a **working hypothesis** that requires empirical validation. It is mathematically consistent with the two‑axis symmetry structure and provides a richer classification than binary stability detection.
 
 ---
 
@@ -263,6 +257,10 @@ The stochastic estimate \hat{\Delta}\Psi introduces variance that can lead to un
 
 A fluent hallucination may reside in a local maximum of \Psi if it is statistically common in training data. The current framework does not distinguish between semantic coherence and factual correctness.
 
+11.7 Model Dependency of \Psi
+
+The potential \Psi depends entirely on the attention weights \alpha_{t,s}, which are a function of model architecture and training. Two models producing identical output may have very different \Psi landscapes. This means \Psi measures model‑specific reasoning geometry, not an absolute property of the text. This is a feature for model‑specific verification but a limitation for cross‑model generalization.
+
 ---
 
 12. Future Research Directions
@@ -278,7 +276,7 @@ A fluent hallucination may reside in a local maximum of \Psi if it is statistica
 
 13. Conclusion
 
-By casting AΩ+ as a reasoning potential field over embedding space and linking it to attention geometry, we bridge a conceptual verification framework with transformer architectures. The refinements presented here—kernelized potentials, layer‑depth dynamics, and stochastic trace estimation—make the framework computationally tractable. The tetralectic classification, grounded in a two‑axis symmetry structure, offers a richer alternative to binary stability detection, though it remains a hypothesis requiring empirical validation.
+By casting AΩ+ as a reasoning potential field over embedding space and linking it to attention geometry, we bridge a conceptual verification framework with transformer architectures. The refinements presented here—kernelized potentials, layer‑depth dynamics, and stochastic trace estimation—make the framework computationally tractable. The tetralectic classification, grounded in a two‑axis symmetry structure, offers a richer alternative to binary stability detection, though it remains a hypothesis requiring empirical validation. This document presents a speculative research framework; experimental validation is the necessary next step.
 
 “The next step may be learning how to evaluate the stability of reasoning itself.”
 — AΩ+ Vision
