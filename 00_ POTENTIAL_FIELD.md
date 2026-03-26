@@ -2,11 +2,21 @@
 
 ## A Unified Formulation with Computational Tractability
 
-This document presents a rigorous mathematical formulation of AΩ+ as a **reasoning potential field** over the embedding space of transformer models, directly linking to attention geometry. It addresses key computational challenges through kernelized potentials, layer‑depth dynamics, and stochastic trace estimation, making the framework practically implementable.
+---
+
+## 1. Introduction
+
+This document presents a rigorous mathematical formulation of AΩ+ as a **reasoning potential field** over the embedding space of transformer models, directly linking to attention geometry. The framework is designed to detect instability, contradiction, and hallucination in LLM reasoning traces before they manifest in output.
+
+Key contributions:
+- A kernelized potential field \(\Psi\) that measures local reasoning coherence
+- Layer‑depth dynamics inspired by Neural ODEs
+- A tractable stability score using Hutchinson trace estimation
+- A tetralectic classification of reasoning states grounded in critical point topology
 
 ---
 
-## 1. Embedding Space as the Stage for Reasoning
+## 2. Embedding Space as the Stage for Reasoning
 
 Let \(\mathcal{E} = \mathbb{R}^d\) be the \(d\)-dimensional embedding space of a transformer model. A reasoning trace (sequence of tokens) is represented by:
 
@@ -16,15 +26,15 @@ Let \(\mathcal{E} = \mathbb{R}^d\) be the \(d\)-dimensional embedding space of a
 
 where \(\mathbf{e}_t\) is the embedding vector of the token at position \(t\).
 
-The **attention mechanism** computes weighted averages of these vectors, defining a geometric flow of information in \(\mathcal{E}\).
+The **attention mechanism** computes weighted averages of these vectors, defining a geometric flow of information in \(\mathcal{E}\). This flow determines how semantic information propagates across the sequence.
 
 ---
 
-## 2. The Reasoning Potential Field \(\Psi\)
+## 3. The Reasoning Potential Field \(\Psi\)
 
-We define a scalar field \(\Psi: \mathcal{E} \to \mathbb{R}\), called the **reasoning stability potential**. High values indicate coherent, logically consistent regions; low values signal semantic drift, contradiction, or hallucination risk.
+We define a scalar field \(\Psi: \mathcal{E} \to \mathbb{R}\), called the **reasoning stability potential**. High values indicate regions of coherent, logically consistent reasoning; low values signal semantic drift, contradiction, or hallucination risk.
 
-### 2.1 Kernelized Definition
+### 3.1 Kernelized Definition
 
 To overcome the curse of dimensionality and better capture semantic similarity:
 
@@ -40,7 +50,7 @@ where \(\alpha_{t,s}\) are attention weights, and \(\kappa\) is a similarity ker
 | RBF | \(\exp\left(-\frac{\|\mathbf{u} - \mathbf{v}\|^2}{2\sigma^2}\right)\) | Local sensitivity, learned \(\sigma\) |
 | Attention logits | \(\frac{(\mathbf{W}_Q\mathbf{u}) \cdot (\mathbf{W}_K\mathbf{v})}{\sqrt{d_k}}\) | Reuses existing computation |
 
-### 2.2 Multi-Head Aggregation
+### 3.2 Multi-Head Aggregation
 
 To incorporate the full transformer architecture:
 
@@ -52,9 +62,9 @@ where \(\Psi^{(l,h)}\) uses attention weights from head \(h\) at layer \(l\), an
 
 ---
 
-## 3. Layer-Depth Dynamics
+## 4. Layer-Depth Dynamics
 
-Let \(l \in [0, L]\) index the **layer depth** (continuous via neural ODE interpretation). For a fixed token sequence:
+Let \(l \in [0, L]\) index the **layer depth** (continuous via Neural ODE interpretation). For a fixed token sequence:
 
 \[
 \frac{d\mathbf{e}^{(l)}}{dl} = f_{\theta}^{(l)}(\mathbf{e}^{(l)}, \text{Attention}^{(l)})
@@ -69,7 +79,7 @@ For autoregressive generation, after each new token we compute \(\Psi^{(l)}\) fo
 
 ---
 
-## 4. Reasoning Energy and Stability
+## 5. Reasoning Energy and Stability
 
 In the original AΩ+ formulation, the reasoning stability equation was \(dx/dt = -k(x - x_0)\). In field perspective:
 
@@ -83,7 +93,26 @@ This measures how much the reasoning trajectory "rolls down" the potential lands
 
 ---
 
-## 5. Stochastic Trace Estimation
+## 6. Tetralectic Logic: Motivation and Definition
+
+Binary classification (stable/unstable) is insufficient to capture the full spectrum of reasoning states. For example, a valid logical negation is stable but distinct from a coherent affirmation, while a paradox (e.g., "this statement is false") is unstable in a qualitatively different way.
+
+The tetralectic framework introduces four states, each corresponding to a critical point type in the potential field:
+
+| State | Mathematical Meaning | Reasoning Interpretation |
+|-------|---------------------|--------------------------|
+| **Affirmation** (A) | Local maximum of \(\Psi\) | Coherent, stable reasoning |
+| **Negation** (N) | Local minimum of \(\Psi\) | Stable contradiction (valid negation) |
+| **Paradox** (P) | Saddle point | Unstable internal conflict |
+| **Transcendence** (T) | Higher-order maximum after saddle | Resolution at higher conceptual level |
+
+This mapping is a **working hypothesis** that requires empirical validation. The four‑state distinction allows the verification layer to differentiate between:
+- A valid negation (should be accepted) and a paradoxical contradiction (should be flagged)
+- Surface‑level coherence (local maximum from statistical frequency) and genuine logical stability
+
+---
+
+## 7. Stability Score with Hutchinson Estimation
 
 We need two scalar quantities for verification:
 
@@ -92,7 +121,7 @@ We need two scalar quantities for verification:
 | Gradient norm \(\|\nabla \Psi\|^2\) | One backward pass (exact, cheap) |
 | Laplacian \(\Delta \Psi = \operatorname{Tr}(\mathbf{H}_{\Psi})\) | **Requires estimation** |
 
-### 5.1 Hutchinson's Trace Estimator
+### 7.1 Hutchinson's Trace Estimator
 
 \[
 \operatorname{Tr}(\mathbf{H}_{\Psi}) = \mathbb{E}_{\mathbf{v} \sim \mathcal{N}(0, I)} \left[ \mathbf{v}^\top \mathbf{H}_{\Psi} \mathbf{v} \right]
@@ -109,17 +138,13 @@ def hvp(loss, params, vector):
     return hvp
 ```
 
-5.2 Practical Implementation
+7.2 Practical Implementation
 
 · Use 1–5 random vectors per token per layer (variance decays as 1/\sqrt{m})
 · Total overhead: m \times (2 \times \text{backward passes}) per token
 · Apply only to final layers or low‑confidence tokens for efficiency
 
----
-
-6. Stability Score
-
-The unified stability score is:
+7.3 Stability Score
 
 \boxed{S = \hat{\Delta} \Psi - \lambda \|\nabla \Psi\|^2}
 
@@ -129,24 +154,7 @@ where:
 · \|\nabla \Psi\|^2 is computed exactly
 · \lambda is a tunable hyperparameter
 
----
-
-7. Tetralectic Logic as Critical Points
-
-The four states correspond to critical points of the potential field:
-
-State Mathematical Meaning
-Affirmation (A) Local maximum of \Psi (attractor)
-Negation (N) Local minimum of \Psi (repeller)
-Paradox (P) Saddle point – mixed curvature
-Transcendence (T) Higher-order local maximum reached after traversing a saddle
-
-Classification uses the stability score and Hessian signature:
-
-· S > \tau_{\text{high}} → Affirmation
-· S < \tau_{\text{low}} with consistent layers → Negation
-· S < \tau_{\text{low}} with inconsistent layers → Paradox
-· \Delta \Psi changes sign across layers → Transcendence
+Threshold Calibration: Values for \tau_{\text{high}}, \tau_{\text{low}}, and \theta_{\text{hallucination}} must be calibrated per model using a validation set of stable and unstable reasoning traces (e.g., using z‑score normalization over the distribution of S on correct vs. incorrect outputs).
 
 ---
 
@@ -164,7 +172,11 @@ For each new token e_t:
         c. Estimate ΔΨ^{(l,h)} via Hutchinson (m=1..5 vectors)
     3. Aggregate to Ψ_total, ∇Ψ_total, ΔΨ_total
     4. Compute stability score S = ΔΨ_total - λ‖∇Ψ_total‖²
-    5. Classify tetralectic state using thresholds
+    5. Classify tetralectic state using calibrated thresholds:
+        - if S > τ_high: Affirmation
+        - elif S < τ_low and consistent across layers: Negation
+        - elif S < τ_low and inconsistent across layers: Paradox
+        - elif ΔΨ changes sign across layers: Transcendence
     6. If S < θ_hallucination → flag for rejection/verification
 ```
 
@@ -186,43 +198,85 @@ For a 7B parameter model, this adds ~20–30% overhead – feasible for research
 
 ---
 
-10. Why This Formulation Matters
+10. Related Work
 
-· Direct compatibility with transformers: The potential field lives in the same space where attention operates
-· Geometric intuition: Stability becomes staying inside attractive basins; hallucinations correspond to leaving them
-· Unified framework: Scalar field \Psi subsumes reasoning energy, tetralectic logic, and multi‑dimensional truth evaluation
-· Practical implementability: Hutchinson estimation makes Hessian computation tractable
+This framework builds on and connects to several existing research directions:
 
----
-
-11. Open Research Directions
-
-1. Learning w_{l,h} – fine‑tune aggregation weights on stable/unstable reasoning traces
-2. Adaptive m – use more Hutchinson vectors only when attention entropy is high
-3. Factual potential \Psi_{\text{factual}} – incorporate retrieval embeddings to distinguish logical truth from semantic fluency
-4. Attention‑free approximations – use key‑value cache to estimate Ψ without full recomputation
+Area Key Works Relationship
+Probing and Interpretability Belinkov (2022), Tenney et al. (2019) Our potential field \Psi can be seen as a geometric probe for reasoning stability
+Representation Geometry Ethayarajh (2019), Reif et al. (2019) We analyze curvature and gradient structure in embedding space
+Mechanistic Interpretability Elhage et al. (2021), Olsson et al. (2022) Attention heads are treated as dynamical systems; our layer‑depth dynamics aligns with circuit analysis
+Energy‑Based Models LeCun et al. (2006), Grathwohl et al. (2020) \Psi functions as an energy landscape over reasoning trajectories
+Transformer Geometry Wang et al. (2021), Ge et al. (2022) Our Hessian analysis extends prior work on representation smoothness
+Hallucination Detection Manakul et al. (2023), Li et al. (2023) AΩ+ offers a complementary geometric approach to existing semantic or consistency‑based methods
 
 ---
 
-12. Conclusion
+11. Known Limitations and Open Questions
 
-By casting AΩ+ as a reasoning potential field over embedding space and linking it to attention geometry, we bridge the conceptual framework with transformer architectures. The refinements presented here—kernelized potentials, layer‑depth dynamics, and stochastic trace estimation—make the framework computationally tractable and ready for experimental implementation.
+11.1 Smoothness Assumption
+
+The current formulation draws inspiration from Neural ODEs, assuming that the evolution of representations across transformer layers is approximately smooth. In practice, the embedding space is highly non‑convex, and layer‑wise transformations can be discontinuous. The assumption that topological stability of \Psi correlates with semantic/logical correctness remains an empirical hypothesis requiring validation.
+
+11.2 Critical Points Interpretation
+
+The mapping of tetralectic states to critical points (local maxima, minima, saddles) is mathematically elegant but not guaranteed to hold in practice. Attention‑weighted embeddings may not form a smooth potential landscape with interpretable critical points. This is a working hypothesis to be tested empirically.
+
+11.3 Threshold Calibration
+
+Values for \tau_{\text{high}}, \tau_{\text{low}}, and \theta_{\text{hallucination}} are model‑dependent. Without empirical calibration on validation sets, the classifier is non‑functional. Calibration must account for per‑model distributional properties of S.
+
+11.4 Computational Overhead
+
+With Hutchinson trace estimation (m=3), the verification layer adds ≈1 forward + 7 backward passes per token. This is:
+
+· Acceptable for offline verification, research analysis, or post‑hoc hallucination detection
+· Prohibitive for real‑time autoregressive generation without further optimization
+
+11.5 Variance of Hutchinson Estimator
+
+The stochastic estimate \hat{\Delta}\Psi introduces variance that can lead to unstable classifications. Future work must explore variance reduction techniques (e.g., moving averages, control variates).
+
+11.6 Semantic vs. Factual Stability
+
+A fluent hallucination may reside in a local maximum of \Psi if it is statistically common in training data. The current framework does not distinguish between semantic coherence and factual correctness.
+
+---
+
+12. Future Research Directions
+
+1. Empirical Validation: Test correlation between S and hallucination on benchmarks (TruthfulQA, HaluEval, GSM8K) with human‑annotated reasoning traces.
+2. Threshold Calibration Protocols: Develop systematic methods for per‑model calibration using validation sets.
+3. Variance Reduction: Implement moving averages, control variates, or adaptive m for Hutchinson estimator.
+4. Factual Potential \Psi_{\text{factual}}: Integrate retrieval‑augmented embeddings to distinguish logical truth from semantic fluency.
+5. Optimized Implementation: Reduce overhead by applying only to final layers, using diagonal Fisher approximation, or batching across tokens.
+6. Mechanistic Interpretability: Analyze which attention heads contribute most to \Psi and how their geometry correlates with reasoning failures.
+
+---
+
+13. Conclusion
+
+By casting AΩ+ as a reasoning potential field over embedding space and linking it to attention geometry, we bridge a conceptual verification framework with transformer architectures. The refinements presented here—kernelized potentials, layer‑depth dynamics, and stochastic trace estimation—make the framework computationally tractable. The tetralectic classification offers a richer alternative to binary stability detection, though it remains a hypothesis requiring empirical validation.
 
 “The next step may be learning how to evaluate the stability of reasoning itself.”
 — AΩ+ Vision
 
 ---
 
-References
+14. References
 
-· Hutchinson, M. F. (1989). A stochastic estimator of the trace of the influence matrix for Laplacian smoothing splines. Communications in Statistics - Simulation and Computation.
+· Belinkov, Y. (2022). Probing classifiers: Promises, shortcomings, and advances. Computational Linguistics.
 · Chen, T. Q., Rubanova, Y., Bettencourt, J., & Duvenaud, D. (2018). Neural ordinary differential equations. NeurIPS.
-· Martens, J. (2020). New insights and perspectives on the natural gradient method. Journal of Machine Learning Research.
+· Elhage, N., et al. (2021). A mathematical framework for transformer circuits. Anthropic.
+· Ethayarajh, K. (2019). How contextual are contextualized word representations? Comparing the geometry of BERT, ELMo, and GPT‑2 embeddings. EMNLP.
+· Grathwohl, W., Wang, K. C., Jacobsen, J. H., Duvenaud, D., & Zemel, R. (2020). Your classifier is secretly an energy based model and you should treat it like one. ICLR.
+· Hutchinson, M. F. (1989). A stochastic estimator of the trace of the influence matrix for Laplacian smoothing splines. Communications in Statistics.
+· Manakul, P., Liusie, A., & Gales, M. J. (2023). SelfCheckGPT: Zero‑resource black‑box hallucination detection for generative large language models. arXiv.
+· Olsson, C., et al. (2022). In‑context learning and induction heads. Anthropic.
+· Tenney, I., Das, D., & Pavlick, E. (2019). BERT rediscovers the classical NLP pipeline. ACL.
 · Vaswani, A., et al. (2017). Attention is all you need. NeurIPS.
 
 ---
 
 License: MIT
 Author: Athanassios Kapralos
-
-```
