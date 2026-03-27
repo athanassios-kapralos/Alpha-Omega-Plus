@@ -1,20 +1,20 @@
 """
-AΩ+ Reasoning Stability Field – Token‑level Implementation
+AΩ+ Reasoning Stability Field – Production‑Ready Version
 
-This script computes for each sentence in a text file:
-- gradient norm squared of the potential field Ψ
-- estimated Laplacian (trace of Hessian) via Hutchinson estimator
-- stability score S = ΔΨ - λ·‖∇Ψ‖²
+Implements the reasoning potential field Ψ with token embeddings,
+gradient norm, and Hutchinson‑estimated Laplacian.
+Keeps top N most unstable sentences using a max‑heap of negated scores.
 
-It uses token embeddings from a sentence transformer (all-MiniLM-L6-v2)
-and a uniform attention weight approximation (all pairs have equal weight).
-
-Results are saved to a CSV and the top N most unstable sentences are plotted.
+All known issues resolved:
+- Correct heap logic (max‑heap of negated stability scores).
+- Hutchinson estimator clones input to avoid side effects.
+- CSV opened once.
+- functools.partial used for kernel function to avoid closure pitfalls.
 """
 
-# Requirements: pip install torch numpy sentence-transformers tqdm matplotlib seaborn
-
 import torch
+import heapq
+import functools
 from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 import csv
@@ -22,152 +22,140 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # ============================================================================
-# Configuration parameters
+# Configuration
 # ============================================================================
-INPUT_FILE = "dataset.txt"                # one sentence per line
+INPUT_FILE = "dataset.txt"
 OUTPUT_CSV = "stability_scores_per_sentence.csv"
-BATCH_SIZE = 8                            # number of sentences encoded together (adjust for GPU memory)
-LAMBDA_STAB = 1.0                         # λ in S = ΔΨ - λ·‖∇Ψ‖²
-M_HUTCHINSON = 5                          # number of random vectors for trace estimation
-MAX_SEQ_LENGTH = 128                      # truncate/pad sentences to this many tokens
-TOP_N_VISUAL = 20                         # number of most unstable sentences to plot
+BATCH_SIZE = 8
+LAMBDA_STAB = 1.0
+M_HUTCHINSON = 20
+MAX_SEQ_LENGTH = 128
+TOP_N_VISUAL = 20
+SAVE_PLOT = "stability_top.png"
 
 # ============================================================================
-# Device setup
+# Device
 # ============================================================================
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
 # ============================================================================
-# Load model (token embeddings)
+# Model (token embeddings)
 # ============================================================================
 model = SentenceTransformer('all-MiniLM-L6-v2', device=device)
 model.max_seq_length = MAX_SEQ_LENGTH
 
 def get_token_embeddings(texts):
-    """
-    Returns a list of token‑level embedding tensors for each text.
-    Each tensor has shape (num_tokens, embedding_dim).
-    """
-    # encode returns a list of numpy arrays; convert to torch tensors on device
     token_emb_np = model.encode(texts, convert_to_tensor=False, output_value='token_embeddings')
     return [torch.tensor(emb, device=device) for emb in token_emb_np]
 
 # ============================================================================
-# Potential field Ψ (kernelized, uniform attention)
+# Potential field functions
 # ============================================================================
 def pairwise_cosine_similarity(embeddings):
-    """
-    embeddings: (L, d)
-    Returns (L, L) cosine similarity matrix.
-    """
     norms = torch.norm(embeddings, dim=1, keepdim=True)
     embeddings_norm = embeddings / norms.clamp(min=1e-8)
-    sim = torch.mm(embeddings_norm, embeddings_norm.t())
-    return sim
+    return torch.mm(embeddings_norm, embeddings_norm.t())
 
 def potential_field(embeddings, kernel='cosine'):
-    """
-    Ψ = Σ_{i<j} α_{i,j} · κ(e_i, e_j)
-    Uses uniform α = 1/(L*(L-1)) for all pairs (i≠j).
-    """
     L = embeddings.shape[0]
     if L < 2:
         return torch.tensor(0.0, device=embeddings.device, dtype=embeddings.dtype)
     if kernel == 'cosine':
         sim = pairwise_cosine_similarity(embeddings)
-        sim = sim - torch.diag(torch.diag(sim))          # remove diagonal
+        sim = sim - torch.diag(torch.diag(sim))
         return sim.sum() / (L * (L - 1))
     else:
         raise NotImplementedError("Only cosine kernel is implemented.")
 
 # ============================================================================
-# Hutchinson trace estimator for Laplacian (ΔΨ)
+# Hutchinson trace estimator (safe)
 # ============================================================================
-def hutchinson_trace_laplacian(func, inputs, m=5):
+def hutchinson_trace_laplacian(func, inputs, m=20):
     """
-    Estimates trace of Hessian of func at inputs using Hutchinson's method.
-    inputs: tensor (L, d) with requires_grad=True (will be set inside)
-    Returns a float.
+    Estimates trace of Hessian of func at inputs.
+    Clones inputs to avoid side effects.
     """
-    inputs.requires_grad_(True)
-    outputs = func(inputs)               # scalar Ψ
-    grads = torch.autograd.grad(outputs, inputs, create_graph=True)[0]  # ∇Ψ
+    x = inputs.clone().detach().requires_grad_(True)
+    outputs = func(x)
+    grads = torch.autograd.grad(outputs, x, create_graph=True)[0]
 
     trace_est = 0.0
     for _ in range(m):
-        v = torch.randn_like(inputs)               # random vector
-        gv = torch.sum(grads * v)                  # ∇Ψ · v
-        hv = torch.autograd.grad(gv, inputs, retain_graph=True)[0]  # H·v
+        v = torch.randn_like(x)
+        gv = torch.sum(grads * v)
+        hv = torch.autograd.grad(gv, x, retain_graph=True)[0]
         trace_est += torch.sum(v * hv).item()
     return trace_est / m
 
 # ============================================================================
-# Read all sentences
+# Pre‑bind kernel to avoid closure in loop
 # ============================================================================
+psi_func = functools.partial(potential_field, kernel='cosine')
+
+# ============================================================================
+# Main
+# ============================================================================
+# Read all sentences
 with open(INPUT_FILE, "r", encoding="utf-8") as f:
     all_texts = [line.strip() for line in f if line.strip()]
-
 print(f"Total sentences: {len(all_texts)}")
 
-# ============================================================================
-# Prepare CSV output
-# ============================================================================
-with open(OUTPUT_CSV, mode='w', newline='', encoding='utf-8-sig') as f:
-    writer = csv.writer(f)
+# Prepare CSV
+with open(OUTPUT_CSV, mode='w', newline='', encoding='utf-8-sig') as f_csv:
+    writer = csv.writer(f_csv)
     writer.writerow(["text", "grad_norm_sq", "laplacian_est", "stability_score"])
 
-# ============================================================================
-# Main processing loop
-# ============================================================================
-top_entries = []  # list of (stability_score, text)
+    # Max‑heap to keep top N most unstable (lowest stability)
+    # Stores (-stability, text) so that heap root is the largest -stability,
+    # which corresponds to the smallest (most unstable) stability.
+    top_heap = []
 
-for start_idx in tqdm(range(0, len(all_texts), BATCH_SIZE), desc="Processing"):
-    batch_texts = all_texts[start_idx:start_idx + BATCH_SIZE]
-    batch_token_embs = get_token_embeddings(batch_texts)   # list of (L_i, d)
+    for start_idx in tqdm(range(0, len(all_texts), BATCH_SIZE), desc="Processing"):
+        batch_texts = all_texts[start_idx:start_idx + BATCH_SIZE]
+        batch_token_embs = get_token_embeddings(batch_texts)
 
-    for idx, emb in enumerate(batch_token_embs):
-        text = batch_texts[idx]
-        L = emb.shape[0]
+        for idx, emb in enumerate(batch_token_embs):
+            text = batch_texts[idx]
+            L = emb.shape[0]
 
-        if L < 2:
-            # Not enough tokens to form pairs -> Ψ = 0, no meaningful stability
-            grad_norm_sq = 0.0
-            laplacian_est = 0.0
-            stability = 0.0
-        else:
-            # Define a closure that computes Ψ for this sentence's embeddings
-            def psi_func(x):
-                return potential_field(x, kernel='cosine')
+            if L < 2:
+                grad_norm_sq = 0.0
+                laplacian_est = 0.0
+                stability = 0.0
+            else:
+                # Gradient norm squared
+                x = emb.clone().detach().requires_grad_(True)
+                psi = psi_func(x)
+                psi.backward()
+                grad_norm_sq = torch.sum(x.grad ** 2).item()
 
-            # Clone with gradient tracking
-            x = emb.clone().detach().requires_grad_(True)
+                # Laplacian estimate (safe: clones inside)
+                laplacian_est = hutchinson_trace_laplacian(psi_func, emb, m=M_HUTCHINSON)
 
-            # Gradient norm squared
-            psi = psi_func(x)
-            psi.backward()
-            grad_norm_sq = torch.sum(x.grad ** 2).item()
+                stability = laplacian_est - LAMBDA_STAB * grad_norm_sq
 
-            # Laplacian estimate
-            laplacian_est = hutchinson_trace_laplacian(psi_func, x, m=M_HUTCHINSON)
-
-            # Stability score
-            stability = laplacian_est - LAMBDA_STAB * grad_norm_sq
-
-        # Write to CSV
-        with open(OUTPUT_CSV, mode='a', newline='', encoding='utf-8-sig') as f_out:
-            writer = csv.writer(f_out)
+            # Write to CSV
             writer.writerow([text, grad_norm_sq, laplacian_est, stability])
 
-        # Update top N most unstable (lowest stability score)
-        top_entries.append((stability, text))
-        top_entries.sort(key=lambda x: x[0])               # ascending: most unstable first
-        top_entries = top_entries[:TOP_N_VISUAL]
+            # Maintain heap of top N most unstable
+            entry = (-stability, text)
+            if len(top_heap) < TOP_N_VISUAL:
+                heapq.heappush(top_heap, entry)
+            else:
+                # If current -stability is larger than the heap root (i.e., stability is smaller),
+                # replace the root with this more unstable sentence.
+                if -stability > top_heap[0][0]:
+                    heapq.heapreplace(top_heap, entry)
+
+    # After processing, heap contains the TOP_N_VISUAL most unstable sentences.
+    # Convert back to positive stability and sort ascending.
+    top_entries = sorted([(-s, t) for s, t in top_heap], key=lambda x: x[0])
 
 print(f"Computation finished. Results saved to {OUTPUT_CSV}")
 
 # ============================================================================
-# Visualisation: bar plot of the most unstable sentences
+# Visualization
 # ============================================================================
 top_texts = [entry[1] for entry in top_entries]
 top_scores = [entry[0] for entry in top_entries]
@@ -178,4 +166,5 @@ plt.title(f"Top {len(top_entries)} Lowest Stability Scores (most unstable senten
 plt.ylabel("Stability score (lower = more unstable)")
 plt.xticks(rotation=45, ha='right')
 plt.tight_layout()
+plt.savefig(SAVE_PLOT, dpi=150)
 plt.show()
