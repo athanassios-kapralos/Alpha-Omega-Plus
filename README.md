@@ -1,6 +1,6 @@
 ---
-
 Ἰδοὺ ἐξῆλθεν ὁ σπείρων τοῦ σπείρειν.
+--
 
 AΩ+: A Reasoning Verification Layer for Large Language Models
 
