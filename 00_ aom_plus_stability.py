@@ -1,20 +1,16 @@
 """
-AΩ+ Reasoning Stability Field – Production‑Ready Version
+AΩ+ Reasoning Stability Field – Production‑Ready (Optimized)
 
-Implements the reasoning potential field Ψ with token embeddings,
-gradient norm, and Hutchinson‑estimated Laplacian.
-Keeps top N most unstable sentences using a max‑heap of negated scores.
-
-All known issues resolved:
-- Correct heap logic (max‑heap of negated stability scores).
-- Hutchinson estimator clones input to avoid side effects.
-- CSV opened once.
-- functools.partial used for kernel function to avoid closure pitfalls.
+- Rademacher vectors for Hutchinson (lower variance).
+- Optional CUDA cache clearing per batch (not per sentence).
+- Fixed random seed for reproducibility.
+- Correct heap logic for top N most unstable sentences.
 """
 
 import torch
 import heapq
 import functools
+import gc
 from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 import csv
@@ -32,11 +28,17 @@ M_HUTCHINSON = 20
 MAX_SEQ_LENGTH = 128
 TOP_N_VISUAL = 20
 SAVE_PLOT = "stability_top.png"
+RANDOM_SEED = 42
+CLEAR_CUDA_CACHE = True        # clear cache per batch (may help with OOM)
 
 # ============================================================================
-# Device
+# Device & reproducibility
 # ============================================================================
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+torch.manual_seed(RANDOM_SEED)
+if device.type == 'cuda':
+    torch.cuda.manual_seed_all(RANDOM_SEED)
+
 print(f"Using device: {device}")
 
 # ============================================================================
@@ -69,46 +71,37 @@ def potential_field(embeddings, kernel='cosine'):
         raise NotImplementedError("Only cosine kernel is implemented.")
 
 # ============================================================================
-# Hutchinson trace estimator (safe)
+# Hutchinson trace estimator with Rademacher vectors
 # ============================================================================
 def hutchinson_trace_laplacian(func, inputs, m=20):
-    """
-    Estimates trace of Hessian of func at inputs.
-    Clones inputs to avoid side effects.
-    """
     x = inputs.clone().detach().requires_grad_(True)
     outputs = func(x)
     grads = torch.autograd.grad(outputs, x, create_graph=True)[0]
 
     trace_est = 0.0
     for _ in range(m):
-        v = torch.randn_like(x)
+        v = torch.randint(0, 2, x.shape, device=x.device, dtype=x.dtype).float() * 2 - 1
         gv = torch.sum(grads * v)
         hv = torch.autograd.grad(gv, x, retain_graph=True)[0]
         trace_est += torch.sum(v * hv).item()
     return trace_est / m
 
 # ============================================================================
-# Pre‑bind kernel to avoid closure in loop
+# Pre‑bind kernel
 # ============================================================================
 psi_func = functools.partial(potential_field, kernel='cosine')
 
 # ============================================================================
 # Main
 # ============================================================================
-# Read all sentences
 with open(INPUT_FILE, "r", encoding="utf-8") as f:
     all_texts = [line.strip() for line in f if line.strip()]
 print(f"Total sentences: {len(all_texts)}")
 
-# Prepare CSV
 with open(OUTPUT_CSV, mode='w', newline='', encoding='utf-8-sig') as f_csv:
     writer = csv.writer(f_csv)
     writer.writerow(["text", "grad_norm_sq", "laplacian_est", "stability_score"])
 
-    # Max‑heap to keep top N most unstable (lowest stability)
-    # Stores (-stability, text) so that heap root is the largest -stability,
-    # which corresponds to the smallest (most unstable) stability.
     top_heap = []
 
     for start_idx in tqdm(range(0, len(all_texts), BATCH_SIZE), desc="Processing"):
@@ -130,26 +123,26 @@ with open(OUTPUT_CSV, mode='w', newline='', encoding='utf-8-sig') as f_csv:
                 psi.backward()
                 grad_norm_sq = torch.sum(x.grad ** 2).item()
 
-                # Laplacian estimate (safe: clones inside)
+                # Laplacian estimate
                 laplacian_est = hutchinson_trace_laplacian(psi_func, emb, m=M_HUTCHINSON)
 
                 stability = laplacian_est - LAMBDA_STAB * grad_norm_sq
 
-            # Write to CSV
             writer.writerow([text, grad_norm_sq, laplacian_est, stability])
 
-            # Maintain heap of top N most unstable
+            # Keep top N most unstable
             entry = (-stability, text)
             if len(top_heap) < TOP_N_VISUAL:
                 heapq.heappush(top_heap, entry)
             else:
-                # If current -stability is larger than the heap root (i.e., stability is smaller),
-                # replace the root with this more unstable sentence.
                 if -stability > top_heap[0][0]:
                     heapq.heapreplace(top_heap, entry)
 
-    # After processing, heap contains the TOP_N_VISUAL most unstable sentences.
-    # Convert back to positive stability and sort ascending.
+        # Optional cache clearing per batch (not per sentence)
+        if CLEAR_CUDA_CACHE and device.type == 'cuda':
+            torch.cuda.empty_cache()
+            gc.collect()
+
     top_entries = sorted([(-s, t) for s, t in top_heap], key=lambda x: x[0])
 
 print(f"Computation finished. Results saved to {OUTPUT_CSV}")
